@@ -1,43 +1,43 @@
 import { Loginuser } from "../models/authModel.js";
 import jwt from "jwt-simple";
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt"; // Correct import
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt"; 
 import passport from "passport";
 
-const SECRET = "your-secret-key-here"; // You should store this in an environment variable, not in the code.
+const SECRET = "your-secret-key-here"; 
 
 export const authUser = async (req, res) => {
-  const { username, password } = req.body; // Extract username and password from the request
+  const { username, password } = req.body; 
   
   const jwtOptions = {
-    jwtFromRequest: ExtractJwt.fromHeader("authorization"), // Extract JWT from 'authorization' header
-    secretOrKey: SECRET, // The secret key to verify the token
+    jwtFromRequest: ExtractJwt.fromHeader("authorization"), 
+    secretOrKey: SECRET, 
   };
 
-  // Define Passport JWT strategy for user authentication
+
   const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
-    // If the JWT payload has the correct subject (sub), consider the user authenticated
+
     if (payload.sub === "admin") done(null, true);
-    else done(null, false); // Invalid user
+    else done(null, false); 
   });
   
   passport.use(jwtAuth);
 
   try {
-    // Check user credentials with the Loginuser function
+
     const userdata = await Loginuser(username, password);
 
-    // Payload to store in JWT (sub is the subject)
+
     const payload = {
-      sub: username, // Store the username in the 'sub' field of the token
-      iat: new Date().getTime(), // Issued at timestamp
+      sub: username, 
+      iat: new Date().getTime(), 
     };
 
-    // If login is successful, generate a JWT token
+   
     if (userdata === true) {
-      const token = jwt.encode(payload, SECRET); // Encode the token with payload and secret key
+      const token = jwt.encode(payload, SECRET); 
       return res.status(200).json({
         message: "Login successful",
-        jwtcode: token, // Send the generated JWT in response
+        jwtcode: token, 
       });
     } else {
       return res.status(401).json({
