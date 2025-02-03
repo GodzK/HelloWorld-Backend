@@ -4,6 +4,9 @@ import jwt from "jwt-simple"
 import connection from "./src/config/database.js";
 import userRoute from "./src/routes/userRoute.js";
 import userAuth from "./src/routes/authRoute.js";
+import bookingRoute from "./src/routes/bookingRoute.js";
+import roomRoute from "./src/routes/roomRoute.js";
+import { errorHandler } from "./src/middlewares/errorHandler.js";
 const port = 3000;
 const app = express();
 app.use(express.json());
@@ -23,7 +26,9 @@ connection.connect((err) => {
 
 app.use('/api/auth' , userAuth)
 app.use("/api/user", userRoute);
-
+app.use("/api/bookings", bookingRoute);
+app.use("/api/rooms", roomRoute);
+app.use(errorHandler);
 app.get("/", (req, res) => {
   res.json({
     header: "Hello World",
