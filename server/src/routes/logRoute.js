@@ -1,9 +1,9 @@
 import express from "express";
 import { logAction, fetchLogs } from "../controllers/logController.js";
-import { authenticateJWT } from "../middlewares/authMiddleware.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-router.post("/", authenticateJWT, logAction);
-router.get("/", authenticateJWT, fetchLogs);
+router.post("/", verifyToken, logAction);
+router.get("/", verifyToken, fetchLogs);
 
 export default router;

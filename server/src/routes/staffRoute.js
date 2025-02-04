@@ -1,8 +1,8 @@
 import express from "express";
 import { fetchStaff } from "../controllers/staffController.js";
-import { authenticateJWT, authorizeRoles } from "../middlewares/authMiddleware.js";
+import { verifyToken, checkRole } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-router.get("/", authenticateJWT, authorizeRoles("admin"), fetchStaff);
+router.get("/", verifyToken, checkRole("admin"), fetchStaff);
 
 export default router;

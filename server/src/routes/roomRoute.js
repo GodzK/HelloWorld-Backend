@@ -1,10 +1,10 @@
 import express from "express";
 import { fetchRooms, fetchRoomById, addRoom } from "../controllers/roomController.js";
-import { authenticateJWT, authorizeRoles } from "../middlewares/authMiddleware.js";
+import { verifyToken, checkRole } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
-router.get("/", authenticateJWT, fetchRooms);
-router.get("/:id", authenticateJWT, fetchRoomById);
-router.post("/", authenticateJWT, authorizeRoles("admin"), addRoom);
+router.get("/", verifyToken, fetchRooms);
+router.get("/:id", verifyToken, fetchRoomById);
+router.post("/", verifyToken, checkRole("admin"), addRoom);
 
 export default router;

@@ -5,10 +5,17 @@ export const getUserByEmail = async (email) => {
     return rows.length > 0 ? rows[0] : null;
 };
 
-export const createUser = async (firstname, lastname, email, password, role) => {
+export const createUser = async ({ firstname, lastname, email, password, role }) => {
     const [result] = await db.query(
-        `INSERT INTO user (firstname, lastname, email, password, role) VALUES (?, ?, ?, ?, ?)`,
+        "INSERT INTO user (firstname, lastname, email, password, role) VALUES (?, ?, ?, ?, ?)", 
         [firstname, lastname, email, password, role]
+    );
+    return result;
+};
+export const getMe = async (email) => {
+    const [result] = await db.query(
+        `SELECT firstname, lastname, email from user where email = ?`,
+        [email]
     );
     return result;
 };
