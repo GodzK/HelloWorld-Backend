@@ -1,22 +1,37 @@
-import { createBooking, getBookings ,checkRoomAvailability , cancelBooking} from "../models/bookingModel.js";
-
+import { createBooking, getBookings, checkRoomAvailability, cancelBooking } from "../models/bookingModel.js";
+import moment from "moment";
+import db from "../config/database.js"
 export const bookRoom = async (req, res) => {
     try {
-        const { room_id, start_time, end_time, duration, status, description } = req.body;
-        const user_id = req.user.id;
+        let { room_id, start_time, end_time, status, description } = req.body;
+        const user_id = req.user.id; 
+        const created_by = user_id; 
 
-        // ตรวจสอบว่าห้องว่างหรือไม่
+        
+        const [room] = await db.execute("SELECT * FROM Rooms WHERE room_id = ?", [room_id]);
+        if (room.length === 0) {
+            return res.status(400).json({ message: "Booking Failed", error: "Invalid room_id. Room does not exist." });
+        }
+
+        
+        start_time = moment.utc(start_time).format("YYYY-MM-DD HH:mm:ss");
+        end_time = moment.utc(end_time).format("YYYY-MM-DD HH:mm:ss");
+
+        
         const isAvailable = await checkRoomAvailability(room_id, start_time, end_time);
         if (!isAvailable) {
-            return res.status(400).json({ message: "Room is already booked for this time slot" });
+            return res.status(400).json({ message: "Booking Failed", error: "Room is already booked for this time slot" });
         }
-        // ถ้าว่างให้ทำการจอง
-        const booking = await createBooking(user_id, room_id, start_time, end_time, duration, status, description);
+
+        
+        const booking = await createBooking(user_id, room_id, start_time, end_time, status, description, created_by);
+        
         res.status(201).json({ message: "Booking Successful", booking });
     } catch (err) {
         res.status(500).json({ message: "Booking Failed", error: err.message });
     }
 };
+
 
 export const fetchBookings = async (req, res) => {
     try {
@@ -26,11 +41,13 @@ export const fetchBookings = async (req, res) => {
         res.status(500).json({ message: "Failed to fetch bookings", error: err.message });
     }
 };
+
 export const cancelUserBooking = async (req, res) => {
     try {
         const { booking_id } = req.body;
         const user_id = req.user.id;
 
+        // ✅ Attempt to cancel booking
         const success = await cancelBooking(booking_id, user_id);
         if (!success) {
             return res.status(400).json({ message: "Booking not found or unauthorized" });
