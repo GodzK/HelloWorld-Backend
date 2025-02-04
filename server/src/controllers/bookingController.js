@@ -2,9 +2,9 @@ import { createBooking, getBookings } from "../models/bookingModel.js";
 
 export const bookRoom = async (req, res) => {
     try {
-        const { roomId, date, startTime, endTime } = req.body;
-        const userId = req.user.id;
-        const booking = await createBooking(userId, roomId, date, startTime, endTime);
+        const { room_id, start_time, end_time, duration, status, description } = req.body;
+        const user_id = req.user.id;
+        const booking = await createBooking(user_id, room_id, start_time, end_time, duration, status, description);
         res.status(201).json({ message: "Booking Successful", booking });
     } catch (err) {
         res.status(500).json({ message: "Booking Failed", error: err.message });

@@ -1,11 +1,12 @@
-import jwt from "jwt-simple";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 const SECRET = process.env.JWT_SECRET;
 
 export const authenticateJWT = (req, res, next) => {
     const token = req.headers.authorization;
     if (!token) return res.status(401).json({ message: "Unauthorized" });
     try {
-        const decoded = jwt.decode(token, SECRET);
+        const decoded = jwt.verify(token, SECRET);
         req.user = decoded;
         next();
     } catch (err) {

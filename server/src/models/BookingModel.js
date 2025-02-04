@@ -1,14 +1,15 @@
 import db from "../config/database.js";
 
-export const createBooking = async (userId, roomId, date, startTime, endTime) => {
-    const [rows] = await db.query(
-        `INSERT INTO bookings (user_id, room_id, date, start_time, end_time) VALUES (?, ?, ?, ?, ?)`,
-        [userId, roomId, date, startTime, endTime]
+export const createBooking = async (user_id, room_id, start_time, end_time, duration, status, description) => {
+    const [result] = await db.query(
+        `INSERT INTO Booking (user_id, room_id, start_time, end_time, duration, status, description) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [user_id, room_id, start_time, end_time, duration, status, description]
     );
-    return rows;
+    return result;
 };
 
 export const getBookings = async () => {
-    const [rows] = await db.query(`SELECT * FROM bookings`);
+    const [rows] = await db.query(`SELECT * FROM Booking`);
     return rows;
 };

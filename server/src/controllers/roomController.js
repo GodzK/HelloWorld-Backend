@@ -21,8 +21,8 @@ export const fetchRoomById = async (req, res) => {
 
 export const addRoom = async (req, res) => {
     try {
-        const { name, capacity } = req.body;
-        const newRoom = await createRoom(name, capacity);
+        const { room_name, capacity, area } = req.body;
+        const newRoom = await createRoom(room_name, capacity, area);
         res.status(201).json({ message: "Room added successfully", room: newRoom });
     } catch (err) {
         res.status(500).json({ message: "Failed to add room", error: err.message });

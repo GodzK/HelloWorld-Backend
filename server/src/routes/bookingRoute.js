@@ -1,9 +1,9 @@
 import express from "express";
-import { bookRoom, fetchBookings } from "../controller/bookingController.js";
+import { bookRoom, fetchBookings } from "../controllers/bookingController.js";
 import { authenticateJWT, authorizeRoles } from "../middlewares/authMiddleware.js";
 
-const bookingRoute = express.Router();
-bookingRoute.post("/", authenticateJWT, authorizeRoles("student", "professor"), bookRoom);
-bookingRoute.get("/", authenticateJWT, fetchBookings);
+const router = express.Router();
+router.post("/", authenticateJWT, authorizeRoles("student", "professor"), bookRoom);
+router.get("/", authenticateJWT, fetchBookings);
 
-export default bookingRoute;
+export default router;
