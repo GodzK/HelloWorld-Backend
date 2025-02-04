@@ -26,10 +26,10 @@ export const checkRoomAvailability = async (room_id, start_time, end_time) => {
     return rows.length === 0; 
 };
 
-export const cancelBooking = async (booking_id, user_id) => {
+export const cancelBooking = async (booking_id) => {
     const [result] = await db.query(
-        "DELETE FROM Booking WHERE booking_id = ? AND user_id = ?",
-        [booking_id, user_id]
+        "DELETE FROM Booking WHERE booking_id = ?",
+        [booking_id]
     );
     return result.affectedRows > 0;
 };

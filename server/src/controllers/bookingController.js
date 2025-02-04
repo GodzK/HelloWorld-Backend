@@ -44,13 +44,22 @@ export const fetchBookings = async (req, res) => {
 
 export const cancelUserBooking = async (req, res) => {
     try {
-        const { booking_id } = req.body;
-        const user_id = req.user.id;
+        const { booking_id } = req.params; // เปลี่ยนจาก req.body เป็น req.params
 
-        // ✅ Attempt to cancel booking
-        const success = await cancelBooking(booking_id, user_id);
+        // ตรวจสอบว่าผู้ใช้เป็นคนสร้างการจองหรือไม่
+        const [booking] = await db.execute("SELECT * FROM Booking WHERE booking_id = ?", [booking_id]);
+        if (booking.length === 0) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        if (booking[0].user_id !== req.user.id) {
+            return res.status(403).json({ message: "Unauthorized: You can only cancel your own bookings" });
+        }
+
+        // ยกเลิกการจอง
+        const success = await cancelBooking(booking_id);
         if (!success) {
-            return res.status(400).json({ message: "Booking not found or unauthorized" });
+            return res.status(400).json({ message: "Failed to cancel booking" });
         }
 
         res.status(200).json({ message: "Booking cancelled successfully" });

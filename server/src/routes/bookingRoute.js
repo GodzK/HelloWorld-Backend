@@ -4,7 +4,7 @@ import { verifyToken, checkRole } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 router.post("/", verifyToken, checkRole("student", "professor"), bookRoom);
-router.get("/", verifyToken, fetchBookings);
+router.delete("/:booking_id", verifyToken, cancelUserBooking);
 router.delete("/delete", verifyToken, cancelUserBooking);
 
 export default router;
