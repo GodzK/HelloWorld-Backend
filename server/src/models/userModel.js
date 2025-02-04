@@ -12,10 +12,12 @@ export const createUser = async ({ firstname, lastname, email, password, role })
     );
     return result;
 };
-export const getMe = async (email) => {
-    const [result] = await db.query(
-        `SELECT firstname, lastname, email from user where email = ?`,
-        [email]
-    );
-    return result;
+export const getUserProfile = (req, res) => {
+    if (!req.session || !req.session.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    res.json(req.session.user);
 };
+
+

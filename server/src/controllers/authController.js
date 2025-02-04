@@ -1,55 +1,62 @@
-import jwt from "jsonwebtoken";
-import { getUserByEmail, createUser } from "../models/authModel.js";
+import { getUserByEmail, createUser } from "../models/userModel.js";
 
 export const register = async (req, res) => {
     try {
         const { firstname, lastname, email, password, role } = req.body;
-        const existingUser = await getUserByEmail(email);
-        if (existingUser) {
-            return res.status(400).json({ message: "Email already in use" });
-        }
 
-        // สร้างผู้ใช้ใหม่โดยไม่ต้องเข้ารหัสรหัสผ่าน
-        const userId = await createUser(firstname, lastname, email, password, role);
+        const newUser = await createUser({ firstname, lastname, email, password, role }); // No hashing
 
-        res.status(201).json({ message: "User registered successfully", userId });
+        res.status(201).json({
+            message: "User registered successfully",
+            user: {
+                id: newUser.insertId,
+                firstname,
+                lastname,
+                email,
+                role
+            }
+        });
     } catch (error) {
-        res.status(500).json({ message: "Registration failed", error: error.message });
+        res.status(500).json({ message: "Signup failed", error: error.message });
     }
 };
 
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
         const user = await getUserByEmail(email);
-        if (!user) {
+
+        if (!user) return res.status(401).json({ message: "No user found" });
+
+        if (user.password !== password) { // Direct comparison (no hashing)
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // ตรวจสอบรหัสผ่านโดยไม่ต้องเข้ารหัส
-        if (user.password !== password) {
-            return res.status(401).json({ message: "Invalid credentials" });
-        }
+        req.session.user = {
+            id: user.user_id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            role: user.role
+        };
 
-        // สร้าง JWT
-        const token = jwt.sign(
-            { id: user.user_id, email: user.email, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || "2h" }
-        );
-
-        // ตั้งค่า Cookie
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-
-        res.status(200).json({ message: "Login successful", token });
-    } catch (error) {
-        res.status(500).json({ message: "Login failed", error: error.message });
+        res.json({ message: "Login successful", data: user });
+    } catch (err) {
+        res.status(500).json({ message: "Login failed", error: err.message });
     }
 };
 
 export const logout = (req, res) => {
-    res.clearCookie('token');
-    res.status(200).json({ message: "Logged out successfully" });
+    req.session.destroy(err => {
+        if (err) return res.status(500).json({ message: "Logout failed" });
+        res.json({ message: "Logout successful" });
+    });
+};
+
+export const getUserProfile = (req, res) => {
+    if (!req.session || !req.session.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    res.json(req.session.user);
 };

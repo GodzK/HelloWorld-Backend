@@ -6,11 +6,7 @@ import db from "../config/database.js";
 export const register = async (req, res) => {
     try {
         const { firstname, lastname, email, password, role } = req.body;
-
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create user in DB
         const newUser = await createUser({ firstname, lastname, email, password: hashedPassword, role });
 
         res.status(201).json({ 
@@ -31,31 +27,24 @@ export const register = async (req, res) => {
 // 🔹 Login User (Session-Based)
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;  // Capture email and password from request body
-        const user = await getUserByEmail(email); // Fetch user by email
-        console.log(user);
+        const { email, password } = req.body;
+        const user = await getUserByEmail(email);
 
         if (!user) return res.status(401).json({ message: "No user found" });
 
-        // Directly compare the provided password with the stored password
-        if (user.password !== password) {
+        const passwordMatch = await bcrypt.compare(password, user.password); 
+
+        if (!passwordMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-
+        console.log("User from DB:", user); // Check if the user is fetched correctly
+console.log("Password Match:", passwordMatch); // Check the result of bcrypt.compare
         res.json({ message: "Login successful", data: user });
     } catch (err) {
         res.status(500).json({ message: "Login failed", error: err.message });
     }
 };
 
-// 🔹 Get User Profile (Session-Based)
-export const getUserProfile = (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: "Not authenticated" });
-    }
-
-    res.json(req.session.user);
-};
 
 // 🔹 Logout User
 export const logout = (req, res) => {
