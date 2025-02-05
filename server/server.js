@@ -7,7 +7,7 @@ import userRoute from "./src/routes/userRoute.js";
 import roomRoute from "./src/routes/roomRoute.js";
 import session from "express-session";
 import bookingRoute from "./src/routes/bookingRoute.js";
-import logRoute from "./src/routes/logRoute.js";
+// import logRoute from "./src/routes/logRoute.js";
 import staffRoute from "./src/routes/staffRoute.js";
 import { errorHandler } from "./src/middlewares/errorHandler.js";
 dotenv.config();
@@ -16,17 +16,22 @@ const app = express();
 app.use(session({
     secret: process.env.SESSION_SECRET,  
     resave: false,
-    saveUninitialized: false, 
+    saveUninitialized: false,
     cookie: { 
-        secure: process.env.NODE_ENV === 'production', 
+        secure: false, 
         httpOnly: true, 
-        sameSite: 'strict', 
+        sameSite: "lax",  
         maxAge: 24 * 60 * 60 * 1000 
     }
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5174",  
+    credentials: true  
+}));
+
 app.use(cookieParser());
 
 console.log(db.query("SELECT 1"));
@@ -34,7 +39,7 @@ console.log(db.query("SELECT 1"));
 app.use("/api/users", userRoute);
 app.use("/api/rooms", roomRoute);
 app.use("/api/bookings", bookingRoute);
-app.use("/api/logs", logRoute);
+// app.use("/api/logs", logRoute);
 app.use("/api/staff", staffRoute);
 app.use(errorHandler);
 

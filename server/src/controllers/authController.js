@@ -28,7 +28,7 @@ export const login = async (req, res) => {
 
         if (!user) return res.status(401).json({ message: "No user found" });
 
-        if (user.password !== password) { // Direct comparison (no hashing)
+        if (user.password !== password) { // No hashing
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
@@ -39,6 +39,10 @@ export const login = async (req, res) => {
             email: user.email,
             role: user.role
         };
+
+        await req.session.save(); // สำคัญ!
+
+        console.log("Session after login:", req.session); // เช็ค session
 
         res.json({ message: "Login successful", data: user });
     } catch (err) {
@@ -54,6 +58,8 @@ export const logout = (req, res) => {
 };
 
 export const getUserProfile = (req, res) => {
+    console.log("Session data:", req.session);
+
     if (!req.session || !req.session.user) {
         return res.status(401).json({ message: "Not authenticated" });
     }

@@ -1,9 +1,9 @@
-import express from "express";
-import { logAction, fetchLogs } from "../controllers/logController.js";
-import { verifyToken } from "../middlewares/authMiddleware.js";
+// import express from "express";
+// import { logAction, fetchLogs } from "../controllers/logController.js";
+// import { verifyToken } from "../middlewares/authMiddleware.js";
 
-const router = express.Router();
-router.post("/", verifyToken, logAction);
-router.get("/", verifyToken, fetchLogs);
+// const router = express.Router();
+// router.post("/", verifyToken, logAction);
+// router.get("/", verifyToken, fetchLogs);
 
-export default router;
+// export default router;

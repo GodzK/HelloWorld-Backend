@@ -7,7 +7,7 @@ import Register from './pages/Register';
 import BookRoom from './pages/BookRoom';
 import Bookings from './pages/Booking';
 import './App.css';
-
+import Profile from './pages/Profile';
 function App() {
   return (
     <Router>
@@ -16,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/book-room" element={<BookRoom />} />
         <Route path="/bookings" element={<Bookings />} />
       </Routes>
