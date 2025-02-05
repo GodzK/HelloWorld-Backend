@@ -28,7 +28,7 @@ function Navbar() {
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
     <li><a>Home</a></li>
-        <li><a>Booking</a></li>
+        <li><a href='/booking'>Booking</a></li>
         <li><a>Profile</a></li>
     </ul>
   </div>

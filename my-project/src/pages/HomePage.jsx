@@ -22,7 +22,7 @@ function HomePage() {
           </div>
           
         </div>
-        <button className="hero-button">START</button>
+        <button className="btn hero-button ">START</button>
       </div>
     </div>
   );
