@@ -6,7 +6,6 @@ export const bookRoom = async (req, res) => {
         let { room_id, start_time, end_time, status, description } = req.body;
         const user_id = req.user.id; 
         const created_by = user_id; 
-
         
         const [room] = await db.execute("SELECT * FROM Rooms WHERE room_id = ?", [room_id]);
         if (room.length === 0) {

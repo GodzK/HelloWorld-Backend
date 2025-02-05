@@ -13,11 +13,11 @@ export const createUser = async ({ firstname, lastname, email, password, role })
     return result;
 };
 export const getUserProfile = (req, res) => {
-    if (!req.session || !req.session.user) {
+    if (!req.user) {
         return res.status(401).json({ message: "Not authenticated" });
     }
 
-    res.json(req.session.user);
+    res.json(req.user);
 };
 
 

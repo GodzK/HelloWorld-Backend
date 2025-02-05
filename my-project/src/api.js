@@ -1,11 +1,31 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API = axios.create({
-  baseURL: 'http://localhost:3000/api',
-  headers: {
-    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzM4NjYxMDk5LCJleHAiOjE3Mzg2NjgyOTl9.fZGcz9MXbUwaoYI300u8XdqNRQ68JU9X9rDdIzQNbvk`
-  },
-  withCredentials: true, // Ensure cookies/session data are sent
-});
+const API_URL = "http://localhost:3000/api";
 
-export default API;
+export const register = async (userData) => {
+  return await axios.post(`${API_URL}/auth/register`, userData);
+};
+
+export const login = async (credentials) => {
+  return await axios.post(`${API_URL}/auth/login`, credentials);
+};
+
+export const logout = async () => {
+  return await axios.post(`${API_URL}/auth/logout`);
+};
+
+export const getBookings = async () => {
+  return await axios.get(`${API_URL}/bookings`);
+};
+
+export const createBooking = async (bookingData) => {
+  return await axios.post(`${API_URL}/bookings`, bookingData);
+};
+
+export const cancelBooking = async (bookingId) => {
+  return await axios.delete(`${API_URL}/bookings/${bookingId}`);
+};
+
+export const getUserProfile = async () => {
+  return await axios.get(`${API_URL}/auth/Profile`);
+};

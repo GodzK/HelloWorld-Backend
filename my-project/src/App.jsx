@@ -1,30 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import BookRoom from './pages/BookRoom';
-import Bookings from './pages/Booking';
-import './App.css';
-import Profile from './pages/Profile';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { AnimatePresence } from "framer-motion";
+import HomePage from "./pages/HomePage.jsx";
+import Navbar from "./components/Navbar.jsx";
+import Login from "./pages/Login.jsx";
 function App() {
   return (
     <Router>
-      <div className='nav-hov'>
-        <Navbar />
-      </div>
-      
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/book-room" element={<BookRoom />} />
-        <Route path="/bookings" element={<Bookings />} />
-      </Routes>
+      <Navbar/>
+      <AnimatePresence mode="wait">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </AnimatePresence>
     </Router>
-    
   );
 }
 

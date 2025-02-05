@@ -1,5 +1,5 @@
 import { getUserByEmail, createUser } from "../models/userModel.js";
-
+import jwt from "jsonwebtoken"
 export const register = async (req, res) => {
     try {
         const { firstname, lastname, email, password, role } = req.body;
@@ -31,18 +31,18 @@ export const login = async (req, res) => {
         if (user.password !== password) { // No hashing
             return res.status(401).json({ message: "Invalid credentials" });
         }
-
-        req.session.user = {
+        const token = jwt.sign({
             id: user.user_id,
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
             role: user.role
-        };
-
-        await req.session.save(); // สำคัญ!
-
-        console.log("Session after login:", req.session); // เช็ค session
+        },process.env.JWT_SECRET)
+        res.cookie("token",token,{
+            maxAge : 3*60*60*1000
+        })
+        console.log(token);
+        
 
         res.json({ message: "Login successful", data: user });
     } catch (err) {
@@ -51,18 +51,10 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-    req.session.destroy(err => {
-        if (err) return res.status(500).json({ message: "Logout failed" });
-        res.json({ message: "Logout successful" });
-    });
-};
-
-export const getUserProfile = (req, res) => {
-    console.log("Session data:", req.session);
-
-    if (!req.session || !req.session.user) {
-        return res.status(401).json({ message: "Not authenticated" });
-    }
-
-    res.json(req.session.user);
+    res.clearCookie(
+        "token"
+    );
+    return res.status(200).json(
+        { message: "Logout successful" }
+    )
 };
