@@ -11,7 +11,10 @@ import Profile from './pages/Profile';
 function App() {
   return (
     <Router>
-      <Navbar />
+      <div className='nav-hov'>
+        <Navbar />
+      </div>
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

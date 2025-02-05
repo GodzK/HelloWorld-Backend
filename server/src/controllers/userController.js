@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { getUserByEmail, createUser } from "../models/userModel.js";
 import db from "../config/database.js";
 
-// 🔹 Register User
+
 export const register = async (req, res) => {
     try {
         const { firstname, lastname, email, password, role } = req.body;
@@ -24,7 +24,7 @@ export const register = async (req, res) => {
     }
 };
 
-// 🔹 Login User (Session-Based)
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -37,8 +37,8 @@ export const login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-        console.log("User from DB:", user); // Check if the user is fetched correctly
-console.log("Password Match:", passwordMatch); // Check the result of bcrypt.compare
+        console.log("User from DB:", user); 
+console.log("Password Match:", passwordMatch); 
         res.json({ message: "Login successful", data: user });
     } catch (err) {
         res.status(500).json({ message: "Login failed", error: err.message });

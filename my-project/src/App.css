@@ -20,27 +20,6 @@ body {
   line-height: 1.6;
 }
 
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: var(--primary-dark);
-  box-shadow: var(--shadow);
-}
-
-.navbar a {
-  color: var(--text-light);
-  text-decoration: none;
-  margin: 0 15px;
-  font-size: 1rem;
-  transition: color 0.3s;
-}
-
-.navbar a:hover {
-  color: var(--primary-light);
-}
 
 /* Hero Section */
 .hero {
@@ -176,12 +155,21 @@ h2 {
 }
 .navbar {
   display: flex;
-  justify-content: space-between;
-  background: #003B95;
+  position: fixed; /* Change to fixed */
+  top: 0; /* Add this to ensure it's at the top */
+  left: 0;
+  z-index: 4;
+  justify-content: space-around;
+  background: transparent;
   padding: 1rem 2rem;
   color: white;
   align-items: center;
+  width: 100%; /* Ensure it takes up the full width */
 }
+.hero, .profile-container, .booking-container {
+  padding-top: 70px; /* Add enough padding-top to create space below the navbar */
+}
+
 
 .logo {
   color: white;
