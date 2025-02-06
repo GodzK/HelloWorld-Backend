@@ -51,5 +51,4 @@ app.use("/api/bookings",verifyToken, bookingRoute);
 // app.use("/api/logs", logRoute);
 app.use("/api/staff", staffRoute);
 app.use(errorHandler);
-
 app.listen(port, () => console.log(`Server run on port ${port}`));

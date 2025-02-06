@@ -8,19 +8,16 @@ const localizer = momentLocalizer(moment);
 
 const BookingsCalendar = () => {
   const [bookings, setBookings] = useState([]);
-  const [newBooking, setNewBooking] = useState({
-    title: "",
-    start: "",
-    end: "",
-    room_id: "",
-    description: "",
-  });
+  const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch bookings on component mount
   useEffect(() => {
+    fetchUserInfo();
     fetchBookings();
   }, []);
 
+  // ✅ Fetch Bookings from API
   const fetchBookings = async () => {
     try {
       const response = await getBookings();
@@ -30,24 +27,51 @@ const BookingsCalendar = () => {
         start: new Date(booking.start_time),
         end: new Date(booking.end_time),
         room_id: booking.room_id,
+        user_id: booking.user_id,
       }));
       setBookings(formattedBookings);
     } catch (error) {
       console.error("Failed to fetch bookings:", error);
+      alert("Failed to load bookings. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users/role", {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: "student" }), 
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setUserRole(data.role);
+      setUserId(data.user_id);
+    } catch (error) {
+      console.error("Failed to fetch user info:", error);
+      alert("Failed to load user info. Please try again later.");
     }
   };
 
   const handleSelectSlot = (slotInfo) => {
+    if (userRole !== "student") {
+      alert("Only students can book rooms.");
+      return;
+    }
+
     const { start, end } = slotInfo;
-    setNewBooking({
-      ...newBooking,
-      start: start.toISOString(),
-      end: end.toISOString(),
-    });
-   
     const room_id = prompt("Enter the room ID:");
     const title = prompt("Enter a title for the booking:");
-    
+
     if (title && room_id) {
       handleCreateBooking({ title, start, end, room_id });
     }
@@ -62,48 +86,64 @@ const BookingsCalendar = () => {
         end_time: end.toISOString(),
         status: "pending",
         description: title,
+        user_id: userId,
       };
       await createBooking(bookingData);
-      fetchBookings(); 
+      fetchBookings();
     } catch (error) {
       console.error("Failed to create booking:", error);
+      alert("Failed to create booking. Please try again later.");
     }
   };
 
+  // ✅ Cancel a Booking
   const handleSelectEvent = (event) => {
-    const confirmCancel = window.confirm(
-      `Cancel booking: ${event.title}?`
-    );
+    if (event.user_id !== userId) {
+      alert("You can only cancel your own bookings.");
+      return;
+    }
+
+    const confirmCancel = window.confirm(`Cancel booking: ${event.title}?`);
     if (confirmCancel) {
       handleCancelBooking(event.id);
     }
   };
 
+  // ✅ Handle Booking Cancellation
   const handleCancelBooking = async (bookingId) => {
     try {
       await cancelBooking(bookingId);
-      fetchBookings(); // Refresh bookings
+      fetchBookings();
     } catch (error) {
       console.error("Failed to cancel booking:", error);
+      alert("Failed to cancel booking. Please try again later.");
     }
   };
 
-  return (
-    <div style={{ height: "500px", margin: "20px" }}>
-      <h1>Bookings Calendar</h1>
-      <Calendar
-        localizer={localizer}
-        events={bookings}
-        startAccessor="start"
-        endAccessor="end"
-        selectable
-        onSelectSlot={handleSelectSlot}
-        onSelectEvent={handleSelectEvent}
-        defaultView="week"
-        views={["month", "week", "day"]}
-      />
-    </div>
-  );
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // if (userRole === "student" || userRole === "lecturer") {
+    return (
+      <div style={{ height: "500px", margin: "20px" }}>
+        <h1>Bookings Calendar</h1>
+        <Calendar
+          localizer={localizer}
+          events={bookings}
+          startAccessor="start"
+          endAccessor="end"
+          selectable={userRole === "student"}
+          onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleSelectEvent}
+          defaultView="week"
+          views={["month", "week", "day"]}
+        />
+      </div>
+    );
+  // } else {
+  //   return <div>You do not have permission to access the bookings calendar.</div>;
+  // }
 };
 
 export default BookingsCalendar;

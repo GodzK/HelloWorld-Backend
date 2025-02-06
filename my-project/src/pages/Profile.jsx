@@ -34,13 +34,13 @@ const ProfilePage = () => {
         const response = await getUserProfile();
         setUser(response.data);
       } catch (error) {
-        Swal.fire("Error", "Failed to load profile", "error");
+        Swal.fire("Error", "You haven't logged in yet", "error");
       }
     };
     fetchProfile();
   }, []);
 
-  if (!user) return <div className="text-center mt-20 text-gray-500">Loading...</div>;
+  if (!user) return <div className="text-center mt-20 text-gray-500">go login</div>;
 
   return (
     <motion.div 

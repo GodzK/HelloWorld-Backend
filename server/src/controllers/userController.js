@@ -46,10 +46,4 @@ console.log("Password Match:", passwordMatch);
 };
 
 
-// 🔹 Logout User
-export const logout = (req, res) => {
-    req.session.destroy(err => {
-        if (err) return res.status(500).json({ message: "Logout failed" });
-        res.json({ message: "Logout successful" });
-    });
-};
+

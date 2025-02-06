@@ -13,7 +13,7 @@ function HomePage() {
               <img src={sit} alt="" />
             </h1>
             <div className="right-content">
-                <h1 className="hero-h1">Booking</h1>
+                <h1 className="neon-text">Booking</h1>
             <p className="hero-description">
             King Mongkut's University of Technology Thonburi
           </p>

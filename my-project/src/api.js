@@ -29,3 +29,9 @@ export const cancelBooking = async (bookingId) => {
 export const getUserProfile = async () => {
   return await axios.get(`${API_URL}/auth/Profile`);
 };
+export const getUserId = async () => {
+  return await axios.get(`${API_URL}/users/userId`, { withCredentials: true });
+};
+export const getUserRole= async () => {
+  return await axios.get(`${API_URL}/users/role`, { withCredentials: true });
+};

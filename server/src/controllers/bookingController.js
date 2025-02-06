@@ -4,33 +4,35 @@ import db from "../config/database.js"
 export const bookRoom = async (req, res) => {
     try {
         let { room_id, start_time, end_time, status, description } = req.body;
-        const user_id = req.user.id; 
-        const created_by = user_id; 
-        
+        const user_id = req.user.id;
+
+        if (!moment(start_time).isValid() || !moment(end_time).isValid()) {
+            return res.status(400).json({ message: "Invalid date format" });
+        }
+
+        if (moment(start_time).isAfter(moment(end_time))) {
+            return res.status(400).json({ message: "Start time must be before end time" });
+        }
+
+        // Check if the room exists
         const [room] = await db.execute("SELECT * FROM Rooms WHERE room_id = ?", [room_id]);
         if (room.length === 0) {
-            return res.status(400).json({ message: "Booking Failed", error: "Invalid room_id. Room does not exist." });
+            return res.status(400).json({ message: "Invalid room_id. Room does not exist." });
         }
 
-        
-        start_time = moment.utc(start_time).format("YYYY-MM-DD HH:mm:ss");
-        end_time = moment.utc(end_time).format("YYYY-MM-DD HH:mm:ss");
-
-        
+        // Check room availability
         const isAvailable = await checkRoomAvailability(room_id, start_time, end_time);
         if (!isAvailable) {
-            return res.status(400).json({ message: "Booking Failed", error: "Room is already booked for this time slot" });
+            return res.status(400).json({ message: "Room is already booked for this time slot" });
         }
 
-        
-        const booking = await createBooking(user_id, room_id, start_time, end_time, status, description, created_by);
-        
+        // Create the booking
+        const booking = await createBooking(user_id, room_id, start_time, end_time, status, description, user_id);
         res.status(201).json({ message: "Booking Successful", booking });
     } catch (err) {
         res.status(500).json({ message: "Booking Failed", error: err.message });
     }
 };
-
 
 export const fetchBookings = async (req, res) => {
     try {

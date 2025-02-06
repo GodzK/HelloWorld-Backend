@@ -120,13 +120,27 @@
 
 .hero-content {
     position: relative;
-    z-index: 2; /* ให้เนื้อหาอยู่เหนือ overlay */
+    z-index: 2; 
     text-align: center;
     color: #fff;
-    max-width: 800px; /* Limit content width */
+    max-width: 800px; 
     padding: 0 1rem;
 }
+.neon-text {
+  font-size: 7rem;
+  color: #fff;
+  text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+  animation: glow 1.5s infinite alternate;
+}
 
+@keyframes glow {
+  0% {
+      text-shadow: 0 0 5px #ff005e, 0 0 10px #ff005e, 0 0 20px #ff005e, 0 0 40px #ff005e, 0 0 80px #ff005e;
+  }
+  100% {
+      text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 80px #00d4ff, 0 0 160px #00d4ff;
+  }
+}
 .hero-button {
     background-color: #fff;
     color: #000;

@@ -91,6 +91,9 @@ function Login() {
             Login
           </button>
         </form>
+        <div className="mt-6 text-green-500 text-center">
+    <a href="/register" className="hover:underline">Sign up Here</a>
+  </div>
       </div>
     </div>
   );

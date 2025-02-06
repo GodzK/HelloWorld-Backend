@@ -12,7 +12,7 @@ export const createBooking = async (user_id, room_id, start_time, end_time, stat
 
 
 export const getBookings = async () => {
-    const [rows] = await db.query(`SELECT * FROM Booking`);
+    const [rows] = await db.query("SELECT * FROM Booking");
     return rows;
 };
 export const checkRoomAvailability = async (room_id, start_time, end_time) => {
