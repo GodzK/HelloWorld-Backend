@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { register } from "../services/api";
+import { register } from "../api.js";
+import { useNavigate } from "react-router-dom"; 
+import Swal from "sweetalert2"; // ✅ Import SweetAlert
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +11,8 @@ const Register = () => {
     password: "",
     role: "student",
   });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,47 +20,109 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); 
     try {
       const response = await register(formData);
-      console.log(response.data);
+      console.log("Registration successful:", response.data);
+
+      // ✅ SweetAlert Success Message
+      Swal.fire({
+        title: "Registration Successful!",
+        text: "Redirecting to Login Page...",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      // ✅ Redirect to login page after delay
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+
     } catch (error) {
-      console.error(error);
+      console.error("Registration failed:", error);
+      setError(error.response?.data?.message || "Registration failed. Please try again.");
+
+      // ✅ SweetAlert Error Message
+      Swal.fire({
+        title: "Registration Failed!",
+        text: error.response?.data?.message || "Something went wrong!",
+        icon: "error",
+      });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="firstname"
-        placeholder="First Name"
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="lastname"
-        placeholder="Last Name"
-        onChange={handleChange}
-      />
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        onChange={handleChange}
-      />
-      <select name="role" onChange={handleChange}>
-        <option value="student">Student</option>
-        <option value="professor">Professor</option>
-        <option value="admin">Admin</option>
-      </select>
-      <button type="submit">Register</button>
-    </form>
+    <div className="bg-sky-100 flex justify-center items-center h-screen">
+      <div className="w-1/2 h-screen hidden lg:block">
+        <img alt="Placeholder Image" className="object-cover w-full h-full" />
+      </div>
+
+      <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
+        <h1 className="text-2xl font-semibold mb-4">Register</h1>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="firstname" className="block text-gray-600">First Name</label>
+            <input
+              type="text"
+              name="firstname"
+              placeholder="First Name"
+              onChange={handleChange}
+              id="firstname"
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="lastname" className="block text-gray-600">Last Name</label>
+            <input
+              type="text"
+              name="lastname"
+              placeholder="Last Name"
+              onChange={handleChange}
+              id="lastname"
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-gray-600">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              onChange={handleChange}
+              id="email"
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-gray-600">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+              id="password"
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
+          >
+            Register
+          </button>
+        </form>
+      </div>
+    </div>
   );
 };
 

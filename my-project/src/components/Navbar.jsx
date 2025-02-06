@@ -1,6 +1,7 @@
 import React from 'react'
 import fullsit from "./fullsit.png"
 import { Link } from 'react-router-dom'
+import profile from "../pages/profile.png"
 function Navbar() {
   return (
 <div className="navbar bg-base-100">
@@ -27,7 +28,7 @@ function Navbar() {
   </div>
   <div className="navbar-center hidden lg:flex">
     <ul className="menu menu-horizontal px-1">
-    <li><a>Home</a></li>
+    <li><a href='/'>Home</a></li>
         <li><a href='/booking'>Booking</a></li>
         <li><a>Profile</a></li>
     </ul>
@@ -38,14 +39,14 @@ function Navbar() {
         <div className="w-10 rounded-full">
           <img
             alt="Tailwind CSS Navbar component"
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+            src={profile} />
         </div>
       </div>
       <ul
         tabIndex={0}
         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
         <li>
-          <a className="justify-between">
+          <a className="justify-between" href='profile'>
             Profile
             <span className="badge">data</span>
           </a>
