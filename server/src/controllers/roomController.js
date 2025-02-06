@@ -19,6 +19,11 @@ export const fetchRoomById = async (req, res) => {
     }
 };
 
+export const fetchRoomsByArea = async (area) => {
+    const [rows] = await db.query(`SELECT * FROM Rooms WHERE area = ?`, [area]);
+    return rows;
+};
+
 export const addRoom = async (req, res) => {
     try {
         const { room_name, capacity, area } = req.body;

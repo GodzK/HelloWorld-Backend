@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import "./homepage.css"; // Make sure the CSS file name matches
 import sit from "./sit.png";
 function HomePage() {
+  function gologin(){
+    window.location.href = "/login";
+  }
   return (
     <div className="homepage">
       <div className="hero-container">
@@ -22,7 +25,7 @@ function HomePage() {
           </div>
           
         </div>
-        <button className="btn hero-button ">START</button>
+       <button className="btn hero-button " onClick={gologin} >START</button>
       </div>
     </div>
   );
