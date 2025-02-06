@@ -1,261 +1,75 @@
-ทดสอบฟังก์ชัน Register
-Request:
-Method: POST
+# README
 
-URL: http://localhost:3000/api/users/register
+## API Testing Guide
 
-Body: (เลือก raw และ JSON)
+This project is a backend API built with Express.js, designed for handling user authentication, room bookings, and staff management. This guide will help you test all functions using Postman.
 
-json
-Copy
-{
-  "firstname": "John",
-  "lastname": "Doe",
-  "email": "john.doe@example.com",
-  "password": "password123",
-  "role": "student"
-}
-Expected Response:
-Status Code: 201 Created
+### Prerequisites
+1. Install [Node.js](https://nodejs.org/).
+2. Install [Postman](https://www.postman.com/).
+3. Clone this repository and install dependencies:
+   ```sh
+   git clone https://github.com/GodzK/HelloWorld-Backend.git
+   cd server
+   npm install
+   ```
 
-Response Body:
+### Running the Server
+1. Create a `.env` file and configure the following variables:
+   ```env
+   PORT=3000
+   SESSION_SECRET=your_secret_key
+   JWT_SECRET=your_jwt_secret
+   DB_HOST=your_db_host
+   DB_USER=your_db_user
+   DB_PASSWORD=your_db_password
+   DB_NAME=your_db_name
+   ```
+2. Start the server:
+   ```sh
+   npm start
+   ```
 
-json
-Copy
-{
-  "message": "User registered successfully",
-  "userId": 1
-}
-3. ทดสอบฟังก์ชัน Login
-Request:
-Method: POST
+### Testing API Endpoints
+Use Postman to test the following endpoints.
 
-URL: http://localhost:3000/api/users/login
+#### Authentication
+- **Register:** `POST /api/auth/register`
+- **Login:** `POST /api/auth/login`
+- **Logout:** `POST /api/auth/logout`
 
-Body: (เลือก raw และ JSON)
+#### User Routes
+- **Get User Profile:** `GET /api/users/profile`
+- **Get User ID:** `GET /api/users/userId`
+- **Get User Role:** `GET /api/users/role`
 
-json
-Copy
-{
-  "email": "john.doe@example.com",
-  "password": "password123"
-}
-Expected Response:
-Status Code: 200 OK
+#### Room Routes
+- **Get All Rooms:** `GET /api/rooms`
+- **Get Room by ID:** `GET /api/rooms/:id`
+- **Create Room (Admin Only):** `POST /api/rooms`
 
-Response Body:
+#### Booking Routes
+- **Book a Room:** `POST /api/bookings`
+- **Cancel Booking:** `DELETE /api/bookings/:booking_id`
 
-json
-Copy
-{
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-Cookie: จะมี token ที่ถูกตั้งค่าในคุกกี้
+#### Staff Routes
+- **Get Staff Details (Staff Only):** `GET /api/staff`
 
-4. ทดสอบฟังก์ชัน Book Room
-Request:
-Method: POST
+### Middleware & Security
+- `verifyToken` is used to ensure authentication.
+- `checkRole` ensures access control for different user roles.
+- CORS is configured for specific frontend origins.
 
-URL: http://localhost:3000/api/bookings
+### Error Handling
+All errors are handled using a custom middleware `errorHandler`.
 
-Headers:
+### Notes
+- The API uses JWT for authentication.
+- Sessions are stored securely.
+- Database queries are handled via MySQL.
 
-Authorization: Bearer <token> (ใช้ token ที่ได้จากล็อกอิน)
+### Contributors
+- Developer: [Phakaphol Dherachaisuphakij ]
 
-Body: (เลือก raw และ JSON)
+### License
 
-json
-Copy
-{
-  "room_id": 1,
-  "start_time": "2023-10-15T09:00:00Z",
-  "end_time": "2023-10-15T10:00:00Z",
-  "duration": 60,
-  "status": "pending",
-  "description": "Meeting with team"
-}
-Expected Response:
-Status Code: 201 Created
-
-Response Body:
-
-json
-Copy
-{
-  "message": "Booking Successful",
-  "booking": {
-    "booking_id": 1,
-    "user_id": 1,
-    "room_id": 1,
-    "start_time": "2023-10-15T09:00:00Z",
-    "end_time": "2023-10-15T10:00:00Z",
-    "duration": 60,
-    "status": "pending",
-    "description": "Meeting with team"
-  }
-}
-5. ทดสอบฟังก์ชัน Fetch Bookings
-Request:
-Method: GET
-
-URL: http://localhost:3000/api/bookings
-
-Headers:
-
-Authorization: Bearer <token> (ใช้ token ที่ได้จากล็อกอิน)
-
-Expected Response:
-Status Code: 200 OK
-
-Response Body:
-
-json
-Copy
-{
-  "bookings": [
-    {
-      "booking_id": 1,
-      "user_id": 1,
-      "room_id": 1,
-      "start_time": "2023-10-15T09:00:00Z",
-      "end_time": "2023-10-15T10:00:00Z",
-      "duration": 60,
-      "status": "pending",
-      "description": "Meeting with team"
-    }
-  ]
-}
-6. ทดสอบฟังก์ชัน Cancel Booking
-Request:
-Method: DELETE
-
-URL: http://localhost:3000/api/bookings/cancel
-
-Headers:
-
-Authorization: Bearer <token> (ใช้ token ที่ได้จากล็อกอิน)
-
-Body: (เลือก raw และ JSON)
-
-json
-Copy
-{
-  "booking_id": 1
-}
-Expected Response:
-Status Code: 200 OK
-
-Response Body:
-
-json
-Copy
-{
-  "message": "Booking cancelled successfully"
-}
-7. ทดสอบฟังก์ชัน Fetch Rooms
-Request:
-Method: GET
-
-URL: http://localhost:3000/api/rooms
-
-Headers:
-
-Authorization: Bearer <token> (ใช้ token ที่ได้จากล็อกอิน)
-
-Expected Response:
-Status Code: 200 OK
-
-Response Body:
-
-json
-Copy
-{
-  "rooms": [
-    {
-      "room_id": 1,
-      "room_name": "Conference Room A",
-      "capacity": 10,
-      "area": "Building 1"
-    }
-  ]
-}
-8. ทดสอบฟังก์ชัน Logout
-Request:
-Method: POST
-
-URL: http://localhost:3000/api/users/logout
-
-Headers:
-
-Authorization: Bearer <token> (ใช้ token ที่ได้จากล็อกอิน)
-
-Expected Response:
-Status Code: 200 OK
-
-Response Body:
-
-json
-Copy
-{
-  "message": "Logged out successfully"
-}
-Cookie: token จะถูกลบออก
-
-9. ทดสอบฟังก์ชัน Fetch Logs
-Request:
-Method: GET
-
-URL: http://localhost:3000/api/logs
-
-Headers:
-
-Authorization: Bearer <token> (ใช้ token ที่ได้จากล็อกอิน)
-
-Expected Response:
-Status Code: 200 OK
-
-Response Body:
-
-json
-Copy
-{
-  "logs": [
-    {
-      "log_id": 1,
-      "booking_id": 1,
-      "start_time": "2023-10-15T09:00:00Z",
-      "end_time": "2023-10-15T10:00:00Z",
-      "action": "created",
-      "changed_by": 1
-    }
-  ]
-}
-10. ทดสอบฟังก์ชัน Fetch Staff
-Request:
-Method: GET
-
-URL: http://localhost:3000/api/staff
-
-Headers:
-
-Authorization: Bearer <token> (ใช้ token ที่ได้จากล็อกอิน)
-
-Expected Response:
-Status Code: 200 OK
-
-Response Body:
-
-json
-Copy
-{
-  "staff": [
-    {
-      "staff_id": 1,
-      "firstname": "Jane",
-      "lastname": "Doe",
-      "email": "jane.doe@example.com",
-      "role": "admin"
-    }
-  ]
-}
