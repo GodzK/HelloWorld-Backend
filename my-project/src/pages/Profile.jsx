@@ -35,6 +35,7 @@ const ProfilePage = () => {
         setUser(response.data);
       } catch (error) {
         Swal.fire("Error", "You haven't logged in yet", "error");
+        window.location.href = "/login";
       }
     };
     fetchProfile();

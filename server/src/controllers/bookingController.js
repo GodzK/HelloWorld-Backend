@@ -38,6 +38,8 @@ export const fetchBookings = async (req, res) => {
     try {
         const bookings = await getBookings();
         res.status(200).json({ bookings });
+        console.log(bookings);
+        
     } catch (err) {
         res.status(500).json({ message: "Failed to fetch bookings", error: err.message });
     }
@@ -47,7 +49,6 @@ export const cancelUserBooking = async (req, res) => {
     try {
         const { booking_id } = req.params; // เปลี่ยนจาก req.body เป็น req.params
 
-        // ตรวจสอบว่าผู้ใช้เป็นคนสร้างการจองหรือไม่
         const [booking] = await db.execute("SELECT * FROM Booking WHERE booking_id = ?", [booking_id]);
         if (booking.length === 0) {
             return res.status(404).json({ message: "Booking not found" });
@@ -57,7 +58,6 @@ export const cancelUserBooking = async (req, res) => {
             return res.status(403).json({ message: "Unauthorized: You can only cancel your own bookings" });
         }
 
-        // ยกเลิกการจอง
         const success = await cancelBooking(booking_id);
         if (!success) {
             return res.status(400).json({ message: "Failed to cancel booking" });

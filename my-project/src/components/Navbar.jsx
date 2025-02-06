@@ -2,6 +2,24 @@ import React from 'react'
 import fullsit from "./fullsit.png"
 import { Link } from 'react-router-dom'
 import profile from "../pages/profile.png"
+import axios from "axios";
+import Swal from "sweetalert2";
+const API_URL = "http://localhost:3000/api";
+const logout = async () => {
+  try {
+    await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+    Swal.fire({
+      title: "Logged out!",
+      text: "You have been logged out successfully.",
+      icon: "success",
+      confirmButtonText: "OK"
+    }).then(() => {
+      window.location.href = "/login";
+    });
+  } catch (error) {
+    Swal.fire("Error", "Logout failed!", "error");
+  }
+};
 function Navbar() {
   return (
 <div className="navbar bg-base-100">
@@ -52,7 +70,7 @@ function Navbar() {
           </a>
         </li>
         <li><Link to="/login">Login/Sigin</Link></li>
-        <li><a>Logout</a></li>
+        <li><a onClick={logout}>Logout</a></li>
       </ul>
     </div>
   </div>

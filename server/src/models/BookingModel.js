@@ -10,9 +10,8 @@ export const createBooking = async (user_id, room_id, start_time, end_time, stat
     return result;
 };
 
-
 export const getBookings = async () => {
-    const [rows] = await db.query("SELECT * FROM Booking");
+    const [rows] = await db.query("SELECT Booking.*, Users.email FROM Booking LEFT JOIN Users ON Users.user_id = Booking.user_id");
     return rows;
 };
 export const checkRoomAvailability = async (room_id, start_time, end_time) => {

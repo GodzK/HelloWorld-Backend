@@ -1,7 +1,7 @@
 import db from "../config/database.js";
 
 export const getUserByEmail = async (email) => {
-    const [rows] = await db.query(`SELECT * FROM Users WHERE email = ?`, [email]);
+    const [rows] = await db.query("SELECT * FROM Users WHERE email = ?", [email]);
     return rows.length > 0 ? rows[0] : null;
 };
 

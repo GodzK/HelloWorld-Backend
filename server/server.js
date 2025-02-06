@@ -47,8 +47,20 @@ console.log(db.query("SELECT 1"));
 app.use("/api/auth" ,Authrouth);
 app.use("/api/users", verifyToken, userRoute);
 app.use("/api/rooms", roomRoute);
-app.use("/api/bookings",verifyToken, bookingRoute);
+app.use("/api/bookings",verifyToken , bookingRoute);
 // app.use("/api/logs", logRoute);
 app.use("/api/staff", staffRoute);
 app.use(errorHandler);
 app.listen(port, () => console.log(`Server run on port ${port}`));
+
+
+
+
+
+
+
+
+
+
+
+
