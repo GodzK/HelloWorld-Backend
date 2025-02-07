@@ -92,37 +92,33 @@ const BookingCalendar = () => {
 
   const fetchAllBookings = async (building = "", area = "", room = "") => {
     try {
-        const res = await axios.get(`${API_URL}/bookings`, {
-            params: { building, area, room }, // room เป็น room_name แทน room_id
-            withCredentials: true,
-        });
-
-        const formattedBookings = res.data.bookings.map((booking) => ({
-            id: booking.booking_id,
-            title: `Booked by ${booking.email}`,
-            description: booking.description,
-            start: new Date(booking.start_time),
-            end: new Date(booking.end_time),
-            room_name: booking.room_name, 
-            area: booking.area,
-            building: booking.building,
-            
-            
-        }));
-
-        setBookings(formattedBookings);
+      const res = await axios.get(`${API_URL}/bookings`, {
+        params: { building, area, room },
+        withCredentials: true,
+      });
+  
+      const formattedBookings = res.data.bookings.map((booking) => ({
+        id: booking.booking_id,
+        title: `Booked by ${booking.email}`,
+        description: booking.description,
+        start: new Date(booking.start_time),
+        end: new Date(booking.end_time),
+        room_name: booking.room_name,
+        area: booking.area,
+        building: booking.building,
+      }));
+  
+      console.log(formattedBookings);  
+      setBookings(formattedBookings);
     } catch (err) {
-        console.error("Error fetching bookings:", err);
+      console.error("Error fetching bookings:", err);
     }
-};
+  };
 
-
-  // Handle slot selection
   const handleSelectSlot = ({ start, end }) => {
     setSelectedSlot({ start, end });
   };
 
-  // Confirm booking
   useEffect(() => {
     if (selectedSlot) {
       handleConfirmBooking();
@@ -202,19 +198,25 @@ const BookingCalendar = () => {
     <div style={{ height: "500px", margin: "20px" }}>
       <h1>Bookings Calendar</h1>
 
-      <div>
-        <label>Select Building: </label>
-        <select
-          value={selectedBuilding}
-          onChange={(e) => setSelectedBuilding(e.target.value)}
-        >
-          <option value="">-- Select Building --</option>
-          {buildings.map((building) => (
-            <option key={building} value={building}>
-              {building}
-            </option>
-          ))}
-        </select>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+        {buildings.map((building) => (
+          <div
+            key={building}
+            onClick={() => setSelectedBuilding(building)}
+            style={{
+              cursor: "pointer",
+              backgroundColor: selectedBuilding === building ? "#4CAF50" : "#f1f1f1",
+              padding: "20px",
+              width: "30%",
+              textAlign: "center",
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              transition: "background-color 0.3s ease",
+            }}
+          >
+            <h3>{building}</h3>
+          </div>
+        ))}
       </div>
 
       {selectedBuilding && (
