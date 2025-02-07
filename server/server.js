@@ -9,7 +9,6 @@ import session from "express-session";
 import Authrouth from "./src/routes/authRoute.js"
 import { verifyToken } from "./src/middlewares/authMiddleware.js";
 import bookingRoute from "./src/routes/bookingRoute.js";
-// import logRoute from "./src/routes/logRoute.js";
 import staffRoute from "./src/routes/staffRoute.js";
 import { errorHandler } from "./src/middlewares/errorHandler.js";
 dotenv.config();
@@ -48,7 +47,6 @@ app.use("/api/auth" ,Authrouth);
 app.use("/api/users", verifyToken, userRoute);
 app.use("/api/rooms", roomRoute);
 app.use("/api/bookings",verifyToken , bookingRoute);
-// app.use("/api/logs", logRoute);
 app.use("/api/staff", staffRoute);
 app.use(errorHandler);
 app.listen(port, () => console.log(`Server run on port ${port}`));

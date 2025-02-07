@@ -1,4 +1,4 @@
-import { getAllRooms, getRoomById, createRoom } from "../models/roomModel.js";
+import { getAllRooms, getRoomById, createRoom , getAllBuildings, getAreasByBuilding, getRoomsByArea } from "../models/roomModel.js";
 
 export const fetchRooms = async (req, res) => {
     try {
@@ -19,10 +19,6 @@ export const fetchRoomById = async (req, res) => {
     }
 };
 
-export const fetchRoomsByArea = async (area) => {
-    const [rows] = await db.query(`SELECT * FROM Rooms WHERE area = ?`, [area]);
-    return rows;
-};
 
 export const addRoom = async (req, res) => {
     try {
@@ -31,5 +27,39 @@ export const addRoom = async (req, res) => {
         res.status(201).json({ message: "Room added successfully", room: newRoom });
     } catch (err) {
         res.status(500).json({ message: "Failed to add room", error: err.message });
+    }
+};
+
+
+
+// ดึงข้อมูล Building ทั้งหมด
+export const fetchBuildings = async (req, res) => {
+    try {
+        const buildings = await getAllBuildings();
+        res.status(200).json({ buildings });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch buildings", error: err.message });
+    }
+};
+
+// ดึงข้อมูล Area ตาม Building ที่เลือก
+export const fetchAreasByBuilding = async (req, res) => {
+    try {
+        const { building } = req.params;
+        const areas = await getAreasByBuilding(building);
+        res.status(200).json({ areas });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch areas", error: err.message });
+    }
+};
+
+// ดึงข้อมูลห้องตาม Area ที่เลือก
+export const fetchRoomsByArea = async (req, res) => {
+    try {
+        const { area } = req.params;
+        const rooms = await getRoomsByArea(area);
+        res.status(200).json({ rooms });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch rooms", error: err.message });
     }
 };

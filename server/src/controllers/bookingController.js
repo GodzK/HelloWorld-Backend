@@ -36,10 +36,37 @@ export const bookRoom = async (req, res) => {
 
 export const fetchBookings = async (req, res) => {
     try {
-        const bookings = await getBookings();
+        const { building, area, room } = req.query; // รับค่าตัวกรองจาก query parameters
+
+        let query = `
+            SELECT Booking.*, Users.email, Rooms.building, Rooms.area 
+            FROM Booking 
+            LEFT JOIN Users ON Users.user_id = Booking.user_id
+            LEFT JOIN Rooms ON Rooms.room_id = Booking.room_id
+        `;
+
+        const conditions = [];
+        const params = [];
+
+        if (building) {
+            conditions.push("Rooms.building = ?");
+            params.push(building);
+        }
+        if (area) {
+            conditions.push("Rooms.area = ?");
+            params.push(area);
+        }
+        if (room) {
+            conditions.push("Booking.room_id = ?");
+            params.push(room);
+        }
+
+        if (conditions.length > 0) {
+            query += " WHERE " + conditions.join(" AND ");
+        }
+
+        const [bookings] = await db.execute(query, params);
         res.status(200).json({ bookings });
-        console.log(bookings);
-        
     } catch (err) {
         res.status(500).json({ message: "Failed to fetch bookings", error: err.message });
     }
