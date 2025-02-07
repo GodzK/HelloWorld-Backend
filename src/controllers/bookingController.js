@@ -1,4 +1,4 @@
-import { createBooking, getBookings, checkRoomAvailability, cancelBooking } from "../models/bookingModel.js";
+import { createBooking, checkRoomAvailability, cancelBooking } from "../models/bookingModel.js";
 import moment from "moment";
 import db from "../config/database.js"
 export const bookRoom = async (req, res) => {
