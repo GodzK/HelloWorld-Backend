@@ -59,8 +59,8 @@ const BookingCalendar = () => {
           { withCredentials: true }
         );
         setAreas(response.data.areas);
-        setSelectedArea(""); 
-        setSelectedRoom(""); 
+        setSelectedArea("");
+        setSelectedRoom("");
       } catch (err) {
         console.error("Error fetching areas:", err);
       }
@@ -92,27 +92,30 @@ const BookingCalendar = () => {
 
   const fetchAllBookings = async (building = "", area = "", room = "") => {
     try {
-      const res = await axios.get(`${API_URL}/bookings`, {
-        params: { building, area, room }, // ส่งค่าตัวกรองไปกับ API
-        withCredentials: true,
-      });
+        const res = await axios.get(`${API_URL}/bookings`, {
+            params: { building, area, room }, // room เป็น room_name แทน room_id
+            withCredentials: true,
+        });
 
-      const formattedBookings = res.data.bookings.map((booking) => ({
-        id: booking.booking_id,
-        title: `Booked by ${booking.email}`,
-        description: booking.description,
-        start: new Date(booking.start_time),
-        end: new Date(booking.end_time),
-        room_id: booking.room_id,
-        area: booking.area,
-        building: booking.building,
-      }));
+        const formattedBookings = res.data.bookings.map((booking) => ({
+            id: booking.booking_id,
+            title: `Booked by ${booking.email}`,
+            description: booking.description,
+            start: new Date(booking.start_time),
+            end: new Date(booking.end_time),
+            room_name: booking.room_name, 
+            area: booking.area,
+            building: booking.building,
+            
+            
+        }));
 
-      setBookings(formattedBookings);
+        setBookings(formattedBookings);
     } catch (err) {
-      console.error("Error fetching bookings:", err);
+        console.error("Error fetching bookings:", err);
     }
-  };
+};
+
 
   // Handle slot selection
   const handleSelectSlot = ({ start, end }) => {
@@ -192,7 +195,7 @@ const BookingCalendar = () => {
     (booking) =>
       (!selectedBuilding || booking.building === selectedBuilding) &&
       (!selectedArea || booking.area === selectedArea) &&
-      (!selectedRoom || booking.room_id === selectedRoom)
+      (!selectedRoom || booking.room_name === selectedRoom)
   );
 
   return (
@@ -265,8 +268,12 @@ const BookingCalendar = () => {
               <br />
               <br />
               <small>description : {event.description}</small>
-              {user && event.user_id === user.id && (
-                <button onClick={() => handleDeleteBooking(event.id)}>
+              <br /> <br />
+              {user && (
+                <button
+                  className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-orange-700 hover:border-orange-500 rounded"
+                  onClick={() => handleDeleteBooking(event.id)}
+                >
                   Delete
                 </button>
               )}
@@ -274,7 +281,7 @@ const BookingCalendar = () => {
           ),
         }}
       />
-    </div> 
+    </div>
   );
 };
 

@@ -36,10 +36,10 @@ export const bookRoom = async (req, res) => {
 
 export const fetchBookings = async (req, res) => {
     try {
-        const { building, area, room } = req.query; // รับค่าตัวกรองจาก query parameters
+        const { building, area, room } = req.query; 
 
         let query = `
-            SELECT Booking.*, Users.email, Rooms.building, Rooms.area 
+            SELECT Booking.*, Users.email, Rooms.building, Rooms.area, Rooms.room_name 
             FROM Booking 
             LEFT JOIN Users ON Users.user_id = Booking.user_id
             LEFT JOIN Rooms ON Rooms.room_id = Booking.room_id
@@ -57,7 +57,7 @@ export const fetchBookings = async (req, res) => {
             params.push(area);
         }
         if (room) {
-            conditions.push("Booking.room_id = ?");
+            conditions.push("Rooms.room_name = ?"); 
             params.push(room);
         }
 
@@ -72,9 +72,10 @@ export const fetchBookings = async (req, res) => {
     }
 };
 
+
 export const cancelUserBooking = async (req, res) => {
     try {
-        const { booking_id } = req.params; // เปลี่ยนจาก req.body เป็น req.params
+        const { booking_id } = req.params; 
 
         const [booking] = await db.execute("SELECT * FROM Booking WHERE booking_id = ?", [booking_id]);
         if (booking.length === 0) {
