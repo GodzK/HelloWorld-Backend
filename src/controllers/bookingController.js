@@ -1,4 +1,8 @@
+<<<<<<< HEAD:server/src/controllers/bookingController.js
 import { createBooking, getBookings, checkRoomAvailability, cancelBooking } from "../models/BookingModel.js";
+=======
+import { createBooking, checkRoomAvailability, cancelBooking } from "../models/BookingModel.js";
+>>>>>>> 77156755d94156d589be9889058816706f5ae0b9:src/controllers/bookingController.js
 import moment from "moment";
 import db from "../config/database.js"
 export const bookRoom = async (req, res) => {

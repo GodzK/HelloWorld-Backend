@@ -1,7 +1,5 @@
 import bcrypt from "bcrypt";
 import { getUserByEmail, createUser } from "../models/userModel.js";
-import db from "../config/database.js";
-
 
 export const register = async (req, res) => {
     try {

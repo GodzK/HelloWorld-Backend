@@ -18,7 +18,6 @@ This project is a backend API built with Express.js, designed for handling user 
 1. Create a `.env` file and configure the following variables:
    ```env
    PORT=3000
-   SESSION_SECRET=your_secret_key
    JWT_SECRET=your_jwt_secret
    DB_HOST=your_db_host
    DB_USER=your_db_user
