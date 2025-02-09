@@ -18,19 +18,17 @@ export const createRoom = async (room_name, capacity, area) => {
     return result;
 };
 
-// ดึงข้อมูล Building ทั้งหมด
+// Building ทั้งหมด
 export const getAllBuildings = async () => {
     const [rows] = await db.query("SELECT DISTINCT building FROM Rooms");
     return rows.map(row => row.building);
 };
 
-// ดึงข้อมูล Area ตาม Building ที่เลือก
 export const getAreasByBuilding = async (building) => {
     const [rows] = await db.query("SELECT DISTINCT area FROM Rooms WHERE building = ?", [building]);
     return rows.map(row => row.area);
 };
 
-// ดึงข้อมูลห้องตาม Area ที่เลือก
 export const getRoomsByArea = async (area) => {
     const [rows] = await db.query("SELECT * FROM Rooms WHERE area = ?", [area]);
     return rows;

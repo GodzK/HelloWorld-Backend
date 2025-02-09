@@ -22,8 +22,8 @@ export const verifyToken = (req, res, next) => {
 
 export const checkRole = (roles) => {
     return (req, res, next) => {
-        console.log("Cookies:", req.cookies); // Check if cookies are coming through
-         console.log("User Role:", req.user.role); // Check user role
+        console.log("Cookies:", req.cookies); 
+         console.log("User Role:", req.user.role);
          if (!req.user) {
             return res.status(401).json({ message: "User not authenticated" });
         }

@@ -1,4 +1,4 @@
-import { createBooking, checkRoomAvailability, cancelBooking } from "../models/bookingModel.js";
+import { createBooking, checkRoomAvailability, cancelBooking } from "../models/BookingModel.js";
 import moment from "moment";
 import db from "../config/database.js"
 export const bookRoom = async (req, res) => {
@@ -96,3 +96,28 @@ export const cancelUserBooking = async (req, res) => {
         res.status(500).json({ message: "Cancellation failed", error: err.message });
     }
 };
+
+export const updateStatus = async (req, res) => {
+    const { bookingId } = req.params;
+    const { status } = req.body;
+    
+    if (!status) {
+        return res.status(400).json({ message: "Status is required" });
+    }
+    
+    try {
+        const query = "UPDATE Booking SET status = ?, last_updated = NOW() WHERE booking_id = ?";
+        const [result] = await db.execute(query, [status, bookingId]);
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+        
+        res.json({ message: "Booking status updated successfully" });
+    } catch (error) {
+        console.error("Error updating booking status:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+

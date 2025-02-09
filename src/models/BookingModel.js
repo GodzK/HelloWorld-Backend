@@ -22,6 +22,7 @@ export const checkRoomAvailability = async (room_id, start_time, end_time) => {
         OR (start_time >= ? AND start_time < ?))`,
         [room_id, end_time, start_time, start_time, end_time]
     );
+    //ห้องว่าง
     return rows.length === 0; 
 };
 
@@ -30,5 +31,6 @@ export const cancelBooking = async (booking_id) => {
         "DELETE FROM Booking WHERE booking_id = ?",
         [booking_id]
     );
+    // ต้องคืนtrue ถ้าsuccess
     return result.affectedRows > 0;
 };

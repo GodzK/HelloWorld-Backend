@@ -28,7 +28,7 @@ export const login = async (req, res) => {
 
         if (!user) return res.status(401).json({ message: "No user found" });
 
-        if (user.password !== password) { // No hashing
+        if (user.password !== password) { 
             return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = jwt.sign({
